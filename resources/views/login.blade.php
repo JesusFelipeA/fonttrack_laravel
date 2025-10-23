@@ -375,6 +375,32 @@
             font-size: 1.1rem;
         }
 
+        /* ───────── Botón Google Drive especial ───────── */
+        .btn-drive {
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 25%, #fbbc05 50%, #ea4335 100%);
+            color: white !important;
+            border-radius: 25px;
+            padding: 10px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+            margin: 0.5rem auto;
+        }
+
+        .btn-drive:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(66, 133, 244, 0.4);
+            color: white !important;
+            background: linear-gradient(135deg, #3367d6 0%, #2d8a3e 25%, #f9ab00 50%, #d33b01 100%);
+        }
+
+        .btn-drive i {
+            font-size: 1.1rem;
+        }
+
         /* ───────── Contenedor de botones centrado ───────── */
         .button-container {
             display: flex;
@@ -493,6 +519,12 @@
                 <a id="btnWhatsApp" class="btn-link btn-whatsapp" target="_blank">
                     <i class="bi bi-whatsapp"></i>
                     ¿Olvidaste tu contraseña?
+                </a>
+                <a href="https://drive.google.com/drive/folders/10drFBDLZxBWP1Zbyw1_cdAD0mfH1PEE2?usp=drive_link" 
+                   class="btn-link btn-whatsapp" 
+                   target="_blank">
+                    <i class="bi bi-phone"></i>
+                    App Móvil
                 </a>
             </div>
             
@@ -811,7 +843,7 @@
                 return;
             }
             const mensaje = encodeURIComponent(`Hola, olvidé mi contraseña. Mi correo es ${correo}`);
-            const numero = '5564936743';
+            const numero = '7223648734';
             const url = `https://wa.me/${numero}?text=${mensaje}`;
             this.setAttribute('href', url);
         });
