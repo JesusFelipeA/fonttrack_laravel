@@ -450,17 +450,7 @@
                 $('#usuarioId').val('');
                 $('#imagePreview').hide();
 
-                // Cargar lugares para nuevo usuario
-                $.get('/lugares/all', function (lugares) {
-                    if (!Array.isArray(lugares)) return;
-                    $('#id_lugar').empty();
-                    $('#id_lugar').append('<option value="">Selecciona un lugar</option>');
-                    lugares.forEach(function (lugar) {
-                        $('#id_lugar').append($('<option>').val(lugar.id_lugar).text(lugar.nombre));
-                    });
-                }).fail(function () {
-                    // Si falla, se mantienen los lugares que ya están en el HTML
-                });
+                // Los lugares ya vienen en el HTML del formulario (la ruta /lugares/all no existe).
             });
 
             // Inicializar la tabla con paginación

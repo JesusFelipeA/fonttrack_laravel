@@ -29,10 +29,13 @@ class MaterialController extends Controller
         $lugares = Lugar::all();
         $query = $request->input('query');
 
-        // ✅ FILTRAR MATERIALES POR LUGAR DEL USUARIO
-        $materiales = Material::when($user->tipo_usuario != 1 && $user->id_lugar, function($q) use ($user) {
+        // Filtrar por el lugar del usuario en la consulta (no en la vista), para
+        // que la paginación cuente y muestre solo los materiales de ese lugar.
+        // Un administrador sin lugar asignado ve todos los lugares.
+        $materiales = Material::when($user->id_lugar, function($q) use ($user) {
                 $q->where('id_lugar', $user->id_lugar);
             })
+            ->orderBy('clave_material')
             ->when($query, function ($q) use ($query) {
                 $q->where(function ($subquery) use ($query) {
                     $subquery->where('clave_material', 'like', '%' . $query . '%')
@@ -54,7 +57,13 @@ class MaterialController extends Controller
                                 ->get();
         }
 
-        return view('index_materiales', compact('materiales', 'lugares', 'vehiculos'));
+        // Catálogo completo del lugar para el buscador del reporte de fallas
+        // (la tabla está paginada, la lista de búsqueda no debe estarlo).
+        $catalogo = Material::when($user->id_lugar, fn ($q) => $q->where('id_lugar', $user->id_lugar))
+            ->orderBy('clave_material')
+            ->get(['id_material', 'clave_material', 'descripcion']);
+
+        return view('index_materiales', compact('materiales', 'lugares', 'vehiculos', 'catalogo'));
     }
 
     /**

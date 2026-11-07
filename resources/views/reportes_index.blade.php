@@ -58,7 +58,7 @@
                             </tr>
                         </thead>
                         <tbody id="bodyFallas">
-                            @foreach($fallas->where('id_lugar', Auth::user()->id_lugar) as $falla)
+                            @foreach($fallas as $falla)
                                 <tr data-id="{{ $falla->id }}">
                                     <td class="col-lugar">
                                         <div class="expandable-cell" tabindex="0">
@@ -155,7 +155,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            @if($fallas->where('id_lugar', Auth::user()->id_lugar)->count() == 0)
+                            @if($fallas->count() == 0)
                                 <tr>
                                     <td colspan="17" class="empty-state">
                                         <i class="bi bi-clipboard2-check" aria-hidden="true"></i>

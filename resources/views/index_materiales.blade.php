@@ -14,8 +14,7 @@
 
 @section('content')
     @if(Auth::user()->id_lugar || Auth::user()->tipo_usuario == 1)
-        @php $materialesLugar = $materiales->where('id_lugar', Auth::user()->id_lugar); @endphp
-
+        
         <x-page-header
             eyebrow="Inventario"
             icon="bi-box-seam"
@@ -66,7 +65,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($materialesLugar as $material)
+                        @foreach($materiales as $material)
                             <tr data-id="{{ $material->id_material }}">
                                 <td data-label="ID" class="text-body-secondary">{{ $material->id_material }}</td>
                                 <td data-label="Clave"><span class="ft-code ft-cell-title">{{ $material->clave_material }}</span></td>
@@ -109,12 +108,12 @@
                                 </td>
                             </tr>
                         @endforeach
-                        @if($materialesLugar->count() == 0)
+                        @if($materiales->count() == 0)
                             <tr>
                                 <td colspan="8" class="empty-state">
                                     <i class="bi bi-box-seam" aria-hidden="true"></i>
                                     <h4>{{ request('query') ? 'Sin coincidencias' : 'Sin materiales' }}</h4>
-                                    <p>{{ request('query') ? 'Ningún material de tu lugar coincide con la búsqueda.' : 'No hay materiales registrados para tu lugar.' }}</p>
+                                    <p>{{ request('query') ? 'Ningún material coincide con la búsqueda.' : 'No hay materiales registrados.' }}</p>
                                 </td>
                             </tr>
                         @endif
@@ -468,7 +467,7 @@
                             <input type="text" id="materialBuscar" class="form-control" list="materialesList"
                                 placeholder="Clave o descripción">
                             <datalist id="materialesList">
-                                @foreach($materiales->where('id_lugar', Auth::user()->id_lugar) as $material)
+                                @foreach($catalogo as $material)
                                     <option data-id="{{ $material->id_material }}"
                                         value="{{ $material->clave_material }} - {{ $material->descripcion }}">
                                 @endforeach
@@ -512,6 +511,13 @@
         // Escapa texto antes de insertarlo como HTML.
         function esc(value) {
             return $('<div>').text(value == null ? '' : String(value)).html();
+        }
+
+        // Mensaje legible a partir de una respuesta de error de Laravel.
+        function ajaxError(xhr, fallback = 'No se pudo conectar con el servidor') {
+            const res = xhr && xhr.responseJSON;
+            if (res?.errors) return Object.values(res.errors).flat().join('\n');
+            return res?.error || res?.message || fallback;
         }
 
         // Campos del formulario de material (registro y edición).
@@ -790,15 +796,15 @@
                         $('#passwordValidating').show();
                         $('#passwordValidSuccess').hide();
                         timeout = setTimeout(function () {
-                            $.post('/validar-password', { password })
+                            $.post('{{ route('verificar-password') }}', { password })
                                 .done(function (response) {
-                                    if (response.valid) {
+                                    if (response.success) {
                                         $('#passwordValidating').hide();
                                         $('#passwordValidSuccess').show();
                                         $('#btnConfirmarAprobar').prop('disabled', false);
                                         $('#datosUsuarioAutoriza').show();
-                                        $('#nombreUsuarioAutoriza').text(@json(Auth::user()->nombre));
-                                        $('#correoUsuarioAutoriza').text(@json(Auth::user()->email));
+                                        $('#nombreUsuarioAutoriza').text(response.user?.nombre || @json(Auth::user()->nombre));
+                                        $('#correoUsuarioAutoriza').text(response.user?.email || @json(Auth::user()->correo));
                                     } else {
                                         $('#passwordValidating').hide();
                                         $('#passwordValidSuccess').hide();
@@ -807,9 +813,11 @@
                                         $('#btnConfirmarAprobar').prop('disabled', true);
                                     }
                                 })
-                                .fail(function () {
+                                .fail(function (xhr) {
                                     $('#passwordValidating').hide();
-                                    $('#errorAprobarMessage').text('Error al validar contraseña');
+                                    $('#passwordValidSuccess').hide();
+                                    $('#btnConfirmarAprobar').prop('disabled', true);
+                                    $('#errorAprobarMessage').text(xhr.status === 401 ? 'Contraseña incorrecta' : 'Error al validar contraseña');
                                     $('#errorAprobar').removeClass('d-none');
                                 });
                         }, 500);
@@ -879,8 +887,8 @@
 
             // Cargar vehículos para el modal de reporte de fallas
             $('#modalFalla').on('show.bs.modal', function () {
-                $.get('/vehiculos/list').done(function (response) {
-                    if (response.success) {
+                $.get('{{ route('materials.vehiculos.lugar', ['id_lugar' => Auth::user()->id_lugar ?? 0]) }}').done(function (response) {
+                    if (Array.isArray(response.vehiculos)) {
                         let options = '<option value="">Selecciona un vehículo</option>';
                         response.vehiculos.forEach(function (vehiculo) {
                             options += `<option value="${esc(vehiculo.eco)}"
@@ -888,12 +896,14 @@
                                 data-placas="${esc(vehiculo.placas)}"
                                 data-marca="${esc(vehiculo.marca)}"
                                 data-anio="${esc(vehiculo.anio)}"
-                                data-km="${esc(vehiculo.km)}">
+                                data-km="${esc(vehiculo.kilometraje)}">
                                 ${esc(vehiculo.eco)} - ${esc(vehiculo.marca)}
                             </option>`;
                         });
-                        $('#vehiculo_eco').html(options);
+                        $('#vehiculo_eco').html(response.vehiculos.length ? options : '<option value="">No hay vehículos activos en tu lugar</option>');
                     }
+                }).fail(function (xhr) {
+                    $('#vehiculo_eco').html('<option value="">No se pudieron cargar los vehículos</option>');
                 });
             });
 
@@ -914,9 +924,9 @@
                 });
                 if (selectedOption.length) {
                     const id = selectedOption.data('id');
-                    $.get(`/materiales/${id}`).done(function (response) {
-                        if (response.success) {
-                            const material = response.material;
+                    $.get(`/materials/${id}`).done(function (response) {
+                        if (response.data) {
+                            const material = response.data;
                             const row = `
                                 <tr data-id="${material.id_material}">
                                     <td><span class="ft-code">${esc(material.clave_material)}</span></td>
@@ -959,7 +969,7 @@
                     observaciones: $('#formFalla [name="observaciones"]').val(),
                     usuario_reporta_id: {{ Auth::user()->id_usuario }},
                     nombre_usuario_reporta: @json(Auth::user()->nombre),
-                    correo_usuario_reporta: @json(Auth::user()->email),
+                    correo_usuario_reporta: @json(Auth::user()->correo),
                     correo_destino: $('#correo_destino').val(),
                     materials: JSON.stringify(materiales)
                 };
@@ -982,8 +992,8 @@
                             Swal.fire('Error', response.error || 'Error al enviar reporte', 'error');
                         }
                     },
-                    error: function () {
-                        Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+                    error: function (xhr) {
+                        Swal.fire('Error', ajaxError(xhr, 'Error al enviar reporte'), 'error');
                     },
                     complete: function () {
                         submitBtn.removeClass('loading').prop('disabled', false);
@@ -998,7 +1008,7 @@
                 $('#btnSubirCardex').prop('disabled', true).addClass('loading');
                 $('#progreso').show();
                 $.ajax({
-                    url: '/materiales/import',
+                    url: '{{ route('materials.import') }}',
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -1014,16 +1024,12 @@
                         return xhr;
                     },
                     success: function (response) {
-                        if (response.success) {
-                            Swal.fire('Éxito', response.message, 'success').then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire('Error', response.error || 'Error al procesar el archivo', 'error');
-                        }
+                        Swal.fire('Éxito', response.message || 'Archivo procesado', 'success').then(() => {
+                            location.reload();
+                        });
                     },
-                    error: function () {
-                        Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+                    error: function (xhr) {
+                        Swal.fire('Error', ajaxError(xhr, 'Error al procesar el archivo'), 'error');
                     },
                     complete: function () {
                         $('#btnSubirCardex').prop('disabled', false).removeClass('loading');
@@ -1050,9 +1056,9 @@
                 $('#modalMaterialTitle').html('<i class="bi bi-box-seam" aria-hidden="true"></i> Detalles del material');
                 $('#modalMaterialBody').html('<div class="text-center py-4"><div class="loading-spinner"></div></div>');
                 $('#modalMaterialFooter').html('<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>');
-                $.get(`/materiales/${id}`).done(function (response) {
-                    if (response.success) {
-                        const material = response.material;
+                $.get(`/materials/${id}`).done(function (response) {
+                    if (response.data) {
+                        const material = response.data;
                         const filas = [
                             ['ID', esc(material.id_material)],
                             ['Clave', `<span class="ft-code">${esc(material.clave_material)}</span>`],
@@ -1075,9 +1081,9 @@
                 $('#modalMaterialTitle').html('<i class="bi bi-pencil" aria-hidden="true"></i> Editar material');
                 $('#modalMaterialBody').html('<div class="text-center py-4"><div class="loading-spinner"></div></div>');
                 $('#modalMaterialFooter').html('');
-                $.get(`/materiales/${id}`).done(function (response) {
-                    if (response.success) {
-                        const material = response.material;
+                $.get(`/materials/${id}`).done(function (response) {
+                    if (response.data) {
+                        const material = response.data;
                         $('#materialId').val(material.id_material);
                         $('#modalMaterialBody').html(materialFields(material));
                         $('#modalMaterialFooter').html(`
@@ -1092,7 +1098,7 @@
             $('#formMaterial').submit(function (e) {
                 e.preventDefault();
                 const id = $('#materialId').val();
-                const url = id ? `/materiales/${id}` : '/materiales';
+                const url = id ? `/materials/${id}` : '/materials';
                 const method = id ? 'PUT' : 'POST';
                 const data = $(this).serialize();
 
@@ -1101,16 +1107,13 @@
                     method: method,
                     data: data,
                     success: function (response) {
-                        if (response.success) {
-                            Swal.fire('Éxito', response.message, 'success').then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire('Error', response.error || 'Error al procesar el material', 'error');
-                        }
+                        $('#modalMaterial').modal('hide');
+                        Swal.fire('Éxito', response.message || 'Material guardado', 'success').then(() => {
+                            location.reload();
+                        });
                     },
-                    error: function () {
-                        Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+                    error: function (xhr) {
+                        Swal.fire('Error', ajaxError(xhr, 'Error al procesar el material'), 'error');
                     }
                 });
             });
@@ -1118,9 +1121,9 @@
             // Aumentar existencia
             $(document).on('click', '.btnAumentar', function () {
                 const id = $(this).data('id');
-                $.get(`/materiales/${id}`).done(function (response) {
-                    if (response.success) {
-                        const material = response.material;
+                $.get(`/materials/${id}`).done(function (response) {
+                    if (response.data) {
+                        const material = response.data;
                         $('#materialIdAumentar').val(id);
                         $('#materialNombreAumentar').text(material.descripcion);
                         $('#existenciaActualAumentar').text(material.existencia);
@@ -1135,20 +1138,17 @@
                 const data = $(this).serialize();
 
                 $.ajax({
-                    url: `/materiales/${id}/aumentar`,
+                    url: `/materials/${id}/aumentar`,
                     method: 'POST',
                     data: data,
                     success: function (response) {
-                        if (response.success) {
-                            Swal.fire('Éxito', response.message, 'success').then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire('Error', response.error || 'Error al aumentar existencia', 'error');
-                        }
+                        $('#modalAumentar').modal('hide');
+                        Swal.fire('Éxito', response.message || 'Existencia actualizada', 'success').then(() => {
+                            location.reload();
+                        });
                     },
-                    error: function () {
-                        Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+                    error: function (xhr) {
+                        Swal.fire('Error', ajaxError(xhr, 'Error al aumentar existencia'), 'error');
                     }
                 });
             });
@@ -1168,19 +1168,16 @@
             $('#btnConfirmarEliminar').click(function () {
                 const id = $(this).data('id');
                 $.ajax({
-                    url: `/materiales/${id}`,
+                    url: `/materials/${id}`,
                     method: 'DELETE',
                     success: function (response) {
-                        if (response.success) {
-                            Swal.fire('Éxito', response.message, 'success').then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire('Error', response.error || 'Error al eliminar material', 'error');
-                        }
+                        $('#modalEliminar').modal('hide');
+                        Swal.fire('Éxito', response.message || 'Material eliminado', 'success').then(() => {
+                            location.reload();
+                        });
                     },
-                    error: function () {
-                        Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+                    error: function (xhr) {
+                        Swal.fire('Error', ajaxError(xhr, 'Error al eliminar material'), 'error');
                     }
                 });
             });
