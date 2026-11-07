@@ -9,6 +9,7 @@ use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\FallaController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\VehiculoController;
+use App\Http\Controllers\DashboardController;
 use App\Models\Lugar;
 
 /* ====================
@@ -33,9 +34,7 @@ Route::post('/logout', [UsuarioController::class, 'logout'])->name('logout');
    DASHBOARD (solo admins)
 ============================ */
 Route::middleware(['auth', 'role:admin'])->group(function () {
-   Route::get('/dashboard', function () {
-      return view('dashboard');
-   })->name('dashboard');
+   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 /* ====================

@@ -10,10 +10,12 @@ use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
 {
-    // Listado de usuarios paginados (10 por página)
+    // Listado de usuarios. La vista busca y pagina en el navegador (10 por
+    // página), así que necesita todos los registros: con paginate(10) solo
+    // se podía buscar dentro de los primeros 10 usuarios.
     public function index()
     {
-        $usuarios = Usuarios::with('lugar')->paginate(10);
+        $usuarios = Usuarios::with('lugar')->orderBy('nombre')->get();
         $lugares = Lugar::all();
         return view('index', compact('usuarios', 'lugares'));
     }
@@ -181,8 +183,8 @@ public function indexMateriales(Request $request)
 
         // Redirección según el tipo de usuario
         if ($usuario->tipo_usuario == 1) {
-            // Usuario tipo 1 = Admin - va a la vista normal (como estaba antes)
-            return redirect()->action([UsuarioController::class, 'index']);
+            // Usuario tipo 1 = Admin - entra al panel (Usuarios sigue en el menú lateral)
+            return redirect()->route('dashboard');
         } else {
             // Usuario tipo 2 = Usuario normal - va a materiales simple
             return redirect()->route('materiales.index');
