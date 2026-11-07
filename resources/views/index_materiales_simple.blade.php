@@ -66,6 +66,12 @@
         </x-slot:actions>
     </x-page-header>
 
+    @if(session('error'))
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-shield-lock" aria-hidden="true"></i><div>{{ session('error') }}</div>
+        </div>
+    @endif
+
     <section class="ft-panel" aria-label="Lista de materiales">
         <form class="ft-toolbar" action="{{ route('materiales.index') }}" method="GET" role="search">
             <div class="ft-toolbar__grow ft-search">

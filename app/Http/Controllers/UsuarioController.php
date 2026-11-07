@@ -52,6 +52,12 @@ public function indexMateriales(Request $request)
             'id_lugar'     => 'required|integer|exists:tb_lugares,id_lugar',
         ]);
 
+        // El registro público (desde el inicio de sesión) solo crea usuarios
+        // normales; únicamente un administrador puede crear otro administrador.
+        if (optional(Auth::user())->tipo_usuario != 1) {
+            $validated['tipo_usuario'] = 2;
+        }
+
         if ($request->hasFile('foto_usuario')) {
             $archivo = $request->file('foto_usuario');
             $nombreFoto = time() . '_' . uniqid() . '.' . $archivo->getClientOriginalExtension();

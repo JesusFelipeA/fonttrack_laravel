@@ -32,8 +32,13 @@ class CheckRole
         $permitidos = array_map(fn ($rol) => self::TIPOS[$rol] ?? null, $roles);
 
         if (! in_array((int) $usuario->tipo_usuario, $permitidos, true)) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'No tienes permisos para esta acción'], 403);
+            }
+
             // Un usuario sin permiso vuelve a su pantalla de inicio.
-            return redirect()->route('materiales.index');
+            return redirect()->route('materiales.index')
+                ->with('error', 'Esa sección es solo para administradores.');
         }
 
         return $next($request);
