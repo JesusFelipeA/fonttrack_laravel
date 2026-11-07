@@ -1,572 +1,145 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Inicia Sesión – FontTrack</title>
-    <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png" />
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+@extends('layouts.guest')
 
-    <style>
-        /* ───────── Reset & Base ───────── */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { font-size: 16px; }
-        body {
-            font-family: "Lato", Arial, sans-serif;
-            color: #634D3B;
-            height: 100vh;
-            background: #F9E5D5;
-            overflow: auto;
-        }
+@section('title', 'Iniciar sesión')
+@section('body-class', 'ft-auth--login')
 
-        /* ───────── Animación de entrada ───────── */
-        .transition-circle {
-            position: fixed;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #634D3B 0%, #E38B5B 50%, #F4A978 100%);
-            border-radius: 50%;
-            z-index: 9998;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(35);
-            animation: shrinkIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-        @keyframes shrinkIn { to { transform: translate(-50%, -50%) scale(0); } }
+@section('content')
+    <div class="transition-circle" id="transitionCircle" aria-hidden="true"></div>
 
-        /* ───────── Animated Blobs ───────── */
-        .blob-container { position: fixed; inset: 0; overflow: hidden; z-index: -1; }
-        .blob {
-            position: absolute;
-            width: 60vmin;
-            aspect-ratio: 1;
-            border-radius: 40% 60% 30% 70% / 50% 30% 70% 50%;
-            opacity: .4;
-            animation: blobMove infinite ease-in-out;
-        }
-        .blob:nth-child(1) { background: #E38B5B; top: -10%; left: -10%; animation-duration: 12s; }
-        .blob:nth-child(2) { background: #F6B88F; top: 60%; left: 5%; animation-duration: 10s; }
-        .blob:nth-child(3) { background: #C49A6C; top: 20%; left: 70%; animation-duration: 8s; }
-        .blob:nth-child(4) { background: #E38B5B; top: 40%; left: 85%; animation-duration: 15s; width: 40vmin; }
-        .blob:nth-child(5) { background: #F6B88F; top: 10%; left: 40%; animation-duration: 14s; width: 30vmin; }
+    <div class="ft-auth">
+        <aside class="ft-auth__aside" aria-hidden="true">
+            <div class="ft-auth__logo">
+                <img src="{{ asset('img/brand/fonttrack-mark-192.webp') }}" alt="" width="44" height="44">
+                FontTrack
+            </div>
 
-        @keyframes blobMove {
-            0% { transform: scale(1) translate(0, 0) rotate(0deg); border-radius: 40% 60% 30% 70% / 50% 30% 70% 50%; }
-            33% { transform: scale(1.2) translate(20px, -30px) rotate(120deg); border-radius: 60% 40% 70% 30% / 30% 70% 50% 50%; }
-            66% { transform: scale(0.8) translate(-20px, 30px) rotate(240deg); border-radius: 30% 70% 50% 50% / 40% 60% 30% 70%; }
-            100% { transform: scale(1) translate(0, 0) rotate(360deg); border-radius: 40% 60% 30% 70% / 50% 30% 70% 50%; }
-        }
+            <div>
+                <h1>Inventario y flota, en un solo lugar.</h1>
+                <p>Controla existencias, registra el uso de materiales por vehículo y da seguimiento a cada reporte de falla.</p>
+                <ul class="ft-auth__facts">
+                    <li><i class="bi bi-box-seam"></i> Existencias por lugar y Kardex</li>
+                    <li><i class="bi bi-truck"></i> Vehículos, kilometraje y conductores</li>
+                    <li><i class="bi bi-clipboard2-pulse"></i> Reportes de fallas en PDF y por correo</li>
+                </ul>
+            </div>
 
-        /* ───────── Glassmorphism Card ───────── */
-        .login-card {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 420px;
-            padding: 2.5rem 2rem;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            z-index: 1;
-            opacity: 0;
-            animation: fadeInUp 1s ease-out 0.5s forwards;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translate(-50%, -40%) scale(0.9); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
+            <img src="{{ asset('img/brand/bonafont-x-fonttrack.webp') }}" alt="" class="ft-auth__partner" width="240" height="75" loading="lazy" style="filter: brightness(0) invert(1); opacity: .75;">
+        </aside>
 
-        .login-card .title {
-            text-align: center;
-            font-size: 1.75rem;
-            color: #E38B5B;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-        }
+        <main class="ft-auth__main">
+            <div class="ft-auth-card login-card">
+                <div class="ft-auth-card__brand">
+                    <img src="{{ asset('img/brand/fonttrack-mark-192.webp') }}" alt="" width="40" height="40">
+                    FontTrack
+                </div>
 
-        /* ───────── Burbujas de Error Mejoradas con X ───────── */
-        .error-bubble {
-            position: relative;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white;
-            padding: 12px 40px 12px 16px;
-            border-radius: 18px;
-            font-size: 0.85rem;
-            margin: 8px 0 16px;
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: none;
-            animation: bubbleSlideIn 0.3s ease-out;
-            max-width: 100%;
-        }
+                <div class="user-type-indicator" id="userTypeIndicator" aria-hidden="true"></div>
+                <h2>Inicia sesión</h2>
+                <p class="ft-auth-card__lead">Usa tu correo corporativo @bonafont.com o @danone.com.</p>
 
-        .error-bubble::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 20px;
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 8px solid #e74c3c;
-        }
+                <form method="POST" action="{{ route('login') }}" id="loginForm" novalidate>
+                    @csrf
 
-        .error-bubble.show {
-            display: block;
-        }
+                    <div class="mb-3">
+                        <label for="logemail" class="form-label">Correo</label>
+                        <div class="input-container">
+                            <input id="logemail" name="correo" type="email" class="form-control input-field @error('correo') is-invalid @enderror"
+                                placeholder="nombre@bonafont.com" required autocomplete="username" value="{{ old('correo') }}"
+                                aria-describedby="emailError" inputmode="email">
+                        </div>
+                        @error('correo')
+                            <div class="error-bubble show" id="emailError" role="alert">
+                                {{ $message }}
+                                <button type="button" class="close-btn" onclick="closeBubble(this)" aria-label="Cerrar mensaje">×</button>
+                            </div>
+                        @else
+                            <div class="error-bubble" id="emailError" role="alert">
+                                Solo se admiten correos con el dominio @bonafont.com o @danone.com
+                                <button type="button" class="close-btn" onclick="closeBubble(this)" aria-label="Cerrar mensaje">×</button>
+                            </div>
+                        @enderror
+                    </div>
 
-        .error-bubble .close-btn {
-            position: absolute;
-            top: 50%;
-            right: 12px;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background-color 0.2s;
-        }
+                    <div class="mb-4">
+                        <label for="logpass" class="form-label">Contraseña</label>
+                        <div class="input-container">
+                            <input id="logpass" name="password" type="password" class="form-control input-field has-icon @error('password') is-invalid @enderror"
+                                placeholder="Tu contraseña" required autocomplete="current-password" aria-describedby="passwordError">
+                            <button type="button" class="password-toggle" onclick="togglePassword('logpass', this)" aria-label="Mostrar contraseña">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        @error('password')
+                            <div class="error-bubble show" id="passwordError" role="alert">
+                                {{ $message }}
+                                <button type="button" class="close-btn" onclick="closeBubble(this)" aria-label="Cerrar mensaje">×</button>
+                            </div>
+                        @else
+                            <div class="error-bubble" id="passwordError" role="alert">
+                                La contraseña no cumple con los requisitos
+                                <button type="button" class="close-btn" onclick="closeBubble(this)" aria-label="Cerrar mensaje">×</button>
+                            </div>
+                        @enderror
+                    </div>
 
-        .error-bubble .close-btn:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
+                    <div class="d-grid gap-2 button-container">
+                        <button type="submit" class="btn btn-primary btn-lg fs-6 py-2">Entrar</button>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url('/') }}" class="btn btn-outline-secondary flex-fill">Regresar</a>
+                            <button type="button" class="btn btn-outline-secondary flex-fill" data-bs-toggle="modal" data-bs-target="#modalRegistro" id="btnNuevoUsuario">Registrarme</button>
+                        </div>
+                    </div>
+                </form>
 
-        .error-bubble.hidden {
-            display: none !important;
-        }
-
-        @keyframes bubbleSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* ───────── Input Fields con botón de mostrar contraseña ───────── */
-        .input-container {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: .75rem 1rem;
-            border: 1px solid #E0C4AA;
-            border-radius: 8px;
-            background: #fffaf6;
-            transition: all .3s;
-        }
-
-        .input-field.has-icon {
-            padding-right: 45px;
-        }
-
-        .input-field:focus { 
-            border-color: #E38B5B; 
-            outline: none; 
-            box-shadow: 0 0 0 3px rgba(227, 139, 91, 0.1);
-        }
-        .input-field.is-invalid { border-color: #e74c3c; background: #fdf2f2; }
-
-        .password-toggle {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #634D3B;
-            cursor: pointer;
-            font-size: 1.1rem;
-            padding: 4px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .password-toggle:hover {
-            background-color: rgba(227, 139, 91, 0.1);
-            color: #E38B5B;
-        }
-
-        /* ───────── Password Requirements (Estilo Burbuja) ───────── */
-        .password-requirements {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            margin: 8px 0 16px;
-            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .requirement {
-            display: block;
-            color: #e74c3c;
-            transition: color 0.3s;
-            margin: 2px 0;
-        }
-        .requirement.valid { color: #27ae60; }
-
-        /* ───────── User Type Indicator ───────── */
-        .user-type-indicator {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .user-type-indicator.admin {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-        }
-
-        .user-type-indicator.user {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-        }
-
-        .user-type-indicator.show {
-            opacity: 1;
-        }
-
-        /* ───────── Animated Buttons Centrados ───────── */
-        .btn-animated {
-            text-transform: uppercase;
-            font-weight: 700;
-            border: 0;
-            position: relative;
-            letter-spacing: 0.15em;
-            margin: 0.5rem auto;
-            padding: 1rem 2.5rem;
-            background: transparent;
-            outline: none;
-            font-size: 1rem;
-            color: #634D3B;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.15s;
-            cursor: pointer;
-            display: block;
-            width: 100%;
-            max-width: 280px;
-            border-radius: 8px;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .btn-animated::after, .btn-animated::before {
-            content: "";
-            position: absolute;
-            height: 40%;
-            width: 10%;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: -10;
-            border-radius: 50%;
-        }
-
-        .btn-animated.btn-primary::before {
-            background-color: #D1784C;
-            top: -0.75rem;
-            left: 0.5rem;
-            animation: topAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.25s infinite alternate;
-        }
-        .btn-animated.btn-primary::after {
-            background-color: #E38B5B;
-            top: 3rem;
-            left: calc(100% - 2rem);
-            animation: bottomAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s infinite alternate;
-        }
-
-        .btn-animated.btn-secondary::before {
-            background-color: #A9866A;
-            top: -0.75rem;
-            left: 0.5rem;
-            animation: topAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.25s infinite alternate;
-        }
-        .btn-animated.btn-secondary::after {
-            background-color: #c49a6c;
-            top: 3rem;
-            left: calc(100% - 2rem);
-            animation: bottomAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s infinite alternate;
-        }
-
-        .btn-animated:hover { color: white; }
-        .btn-animated:hover::before, .btn-animated:hover::after {
-            top: 0;
-            height: 100%;
-            width: 100%;
-            border-radius: 8px;
-            animation: none;
-        }
-        .btn-animated:hover::after { left: 0rem; }
-        .btn-animated:hover::before { top: 0rem; left: 0rem; }
-
-        @keyframes topAnimation {
-            from { transform: translate(0rem, 0); }
-            to { transform: translate(0rem, 3.5rem); }
-        }
-        @keyframes bottomAnimation {
-            from { transform: translate(-80%, 0); }
-            to { transform: translate(0rem, 0); }
-        }
-
-        .btn-link {
-            display: block;
-            margin: 0.75rem auto;
-            text-align: center;
-            color: #634D3B;
-            font-size: .9rem;
-            text-decoration: none;
-            max-width: 280px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-        .btn-link:hover { 
-            color: #E38B5B; 
-            background-color: rgba(227, 139, 91, 0.1);
-            text-decoration: none;
-        }
-
-        /* ───────── Botón WhatsApp especial ───────── */
-        .btn-whatsapp {
-            background: linear-gradient(135deg,rgb(199, 120, 94) 0%,rgb(209, 83, 67) 100%);
-            color: white !important;
-            border-radius: 25px;
-            padding: 10px 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 145, 97, 0.3);
-        }
-
-        .btn-whatsapp:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
-            color: white !important;
-        }
-
-        .btn-whatsapp i {
-            font-size: 1.1rem;
-        }
-
-        /* ───────── Botón Google Drive especial ───────── */
-        .btn-drive {
-            background: linear-gradient(135deg, #4285f4 0%, #34a853 25%, #fbbc05 50%, #ea4335 100%);
-            color: white !important;
-            border-radius: 25px;
-            padding: 10px 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
-            margin: 0.5rem auto;
-        }
-
-        .btn-drive:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(66, 133, 244, 0.4);
-            color: white !important;
-            background: linear-gradient(135deg, #3367d6 0%, #2d8a3e 25%, #f9ab00 50%, #d33b01 100%);
-        }
-
-        .btn-drive i {
-            font-size: 1.1rem;
-        }
-
-        /* ───────── Contenedor de botones centrado ───────── */
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        /* ───────── Modal Overrides ───────── */
-        .modal .form-control {
-            background: #fffaf6;
-            border: 1px solid #E0C4AA;
-            border-radius: 6px;
-        }
-        .modal .form-control:focus { 
-            border-color: #E38B5B; 
-            box-shadow: 0 0 0 3px rgba(227, 139, 91, 0.1);
-        }
-        .modal .form-control.is-invalid { border-color: #e74c3c; background: #fdf2f2; }
-        .modal-header { background: #F6B88F; border-bottom: 2px solid #E38B5B; }
-        .modal-title { color: #634D3B; font-weight: bold; }
-        .modal .btn-primary { background: #E38B5B; border: none; border-radius: 6px; }
-        .modal .btn-primary:hover { background: #D1784C; }
-        .modal .btn-secondary { background: #c49a6c; border: none; border-radius: 6px; }
-        .modal .btn-secondary:hover { background: #A9866A; }
-
-        /* ───────── Imagen centrada ───────── */
-        .logo-footer {
-            display: block;
-            margin: 1.5rem auto 0;
-            max-width: 150px;
-            height: auto;
-        }
-
-        /* ───────── Responsive ───────── */
-        @media (max-width: 768px) {
-            .login-card { width: 95%; padding: 2rem 1.5rem; }
-            .login-card .title { font-size: 1.5rem; }
-            .input-field { padding: .65rem .85rem; }
-            .btn-animated { padding: .65rem 2rem; font-size: 0.9rem; max-width: 240px; }
-            .blob { width: 50vmin; }
-            .blob:nth-child(4) { width: 35vmin; }
-            .blob:nth-child(5) { width: 25vmin; }
-        }
-
-        @media (max-width: 576px) {
-            html { font-size: 14px; }
-            .login-card { padding: 1.5rem 1rem; }
-            .login-card .title { font-size: 1.25rem; }
-            .input-field { padding: .5rem .75rem; font-size: .9rem; }
-            .btn-animated { padding: .5rem 1.5rem; font-size: .9rem; max-width: 200px; }
-            .blob { width: 40vmin; }
-            .blob:nth-child(4) { width: 30vmin; }
-            .blob:nth-child(5) { width: 20vmin; }
-        }
-    </style>
-</head>
-
-<body>
-    <div class="transition-circle" id="transitionCircle"></div>
-
-    <div class="blob-container">
-        <div class="blob"></div>
-        <div class="blob"></div>
-        <div class="blob"></div>
-        <div class="blob"></div>
-        <div class="blob"></div>
+                <div class="ft-auth-card__footer">
+                    <a id="btnWhatsApp" target="_blank" rel="noopener" href="#">
+                        <i class="bi bi-whatsapp" aria-hidden="true"></i> ¿Olvidaste tu contraseña?
+                    </a>
+                    <a href="https://drive.google.com/drive/folders/10drFBDLZxBWP1Zbyw1_cdAD0mfH1PEE2?usp=drive_link" target="_blank" rel="noopener">
+                        <i class="bi bi-phone" aria-hidden="true"></i> App móvil
+                    </a>
+                </div>
+            </div>
+        </main>
     </div>
+@endsection
 
-    <div class="login-card">
-        <div class="user-type-indicator" id="userTypeIndicator"></div>
-        <h4 class="title">Inicia Sesión</h4>
-        <form method="POST" action="{{ route('login') }}" id="loginForm">
-            @csrf
-
-            <div class="input-container">
-                <input id="logemail" name="correo" type="email" class="input-field" placeholder="Correo" required
-                    autocomplete="off" value="{{ old('correo') }}">
-            </div>
-            @error('correo') 
-                <div class="error-bubble show">
-                    {{ $message }}
-                    <button type="button" class="close-btn" onclick="closeBubble(this)">×</button>
-                </div>
-            @else
-                <div class="error-bubble" id="emailError">
-                    Solo se admiten correos con el dominio @bonafont.com o @danone.com
-                    <button type="button" class="close-btn" onclick="closeBubble(this)">×</button>
-                </div>
-            @enderror
-
-            <div class="input-container">
-                <input id="logpass" name="password" type="password" class="input-field has-icon" placeholder="Contraseña" required
-                    autocomplete="off">
-                <button type="button" class="password-toggle" onclick="togglePassword('logpass', this)">
-                    <i class="bi bi-eye"></i>
-                </button>
-            </div>
-            @error('password') 
-                <div class="error-bubble show">
-                    {{ $message }}
-                    <button type="button" class="close-btn" onclick="closeBubble(this)">×</button>
-                </div>
-            @else
-                <div class="error-bubble" id="passwordError">
-                    La contraseña no cumple con los requisitos
-                    <button type="button" class="close-btn" onclick="closeBubble(this)">×</button>
-                </div>
-            @enderror
-
-            <div class="button-container">
-                <button type="submit" class="btn-animated btn-primary">Entrar</button>
-                <a href="{{ url('/') }}" class="btn-animated btn-secondary">Regresar</a>
-                <a href="#" class="btn-link" data-bs-toggle="modal" data-bs-target="#modalRegistro" id="btnNuevoUsuario">Registrar</a>
-                <a id="btnWhatsApp" class="btn-link btn-whatsapp" target="_blank">
-                    <i class="bi bi-whatsapp"></i>
-                    ¿Olvidaste tu contraseña?
-                </a>
-                <a href="https://drive.google.com/drive/folders/10drFBDLZxBWP1Zbyw1_cdAD0mfH1PEE2?usp=drive_link" 
-                   class="btn-link btn-whatsapp" 
-                   target="_blank">
-                    <i class="bi bi-phone"></i>
-                    App Móvil
-                </a>
-            </div>
-            
-            <img src="{{ asset('img/by.png') }}" alt="by" class="logo-footer">
-        </form>
-    </div>
-
+@push('modals')
     <!-- Modal de Registro -->
     <div class="modal fade" id="modalRegistro" tabindex="-1" aria-labelledby="modalRegistroLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <form id="formRegistro" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" id="usuarioId" name="id_usuario">
 
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalRegistroLabel">Registrar Usuario</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <h2 class="modal-title" id="modalRegistroLabel"><i class="bi bi-person-plus" aria-hidden="true"></i> Crear cuenta</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
 
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre:</label>
-                            <input type="text" id="nombre" name="nombre" class="form-control" required>
+                            <label for="nombre" class="form-label required">Nombre</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control" required autocomplete="name">
                         </div>
                         <div class="mb-3">
-                            <label for="correoRegistro" class="form-label">Correo:</label>
-                            <input type="email" id="correoRegistro" name="correo" class="form-control" required>
-                            <div class="error-bubble" id="emailModalError">
+                            <label for="correoRegistro" class="form-label required">Correo</label>
+                            <input type="email" id="correoRegistro" name="correo" class="form-control" required autocomplete="email" aria-describedby="emailModalError">
+                            <div class="error-bubble" id="emailModalError" role="alert">
                                 Debe ser un correo @bonafont.com o @danone.com
-                                <button type="button" class="close-btn" onclick="closeBubble(this)">×</button>
+                                <button type="button" class="close-btn" onclick="closeBubble(this)" aria-label="Cerrar mensaje">×</button>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="passwordRegistro" class="form-label">Contraseña:</label>
+                            <label for="passwordRegistro" class="form-label required">Contraseña</label>
                             <div class="input-container">
-                                <input type="password" id="passwordRegistro" name="password" class="form-control has-icon" required>
-                                <button type="button" class="password-toggle" onclick="togglePassword('passwordRegistro', this)">
-                                    <i class="bi bi-eye"></i>
+                                <input type="password" id="passwordRegistro" name="password" class="form-control has-icon" required autocomplete="new-password" aria-describedby="passwordReqs">
+                                <button type="button" class="password-toggle" onclick="togglePassword('passwordRegistro', this)" aria-label="Mostrar contraseña">
+                                    <i class="bi bi-eye" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <div class="password-requirements">
+                            <div class="password-requirements" id="passwordReqs">
                                 <span class="requirement" id="req-uppercase">• Al menos una letra mayúscula</span>
                                 <span class="requirement" id="req-number">• Al menos un número</span>
                                 <span class="requirement" id="req-length">• Mínimo 6 caracteres</span>
@@ -575,62 +148,59 @@
                         </div>
                         <input type="hidden" id="tipo_usuario" name="tipo_usuario" value="2">
                         <div class="mb-3">
-                            <label for="foto_usuario" class="form-label">Foto de Perfil:</label>
-                            <input type="file" id="foto_usuario" name="foto_usuario" class="form-control" accept="image/png, image/jpeg">
-                            <small class="text-muted">Si no selecciona una imagen, se usará la foto por defecto</small>
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_lugar" class="form-label">Lugar:</label>
-                            <select id="id_lugar" name="id_lugar" class="form-control">
+                            <label for="id_lugar" class="form-label">Lugar</label>
+                            <select id="id_lugar" name="id_lugar" class="form-select">
                                 @foreach($lugares as $lugar)
                                     <option value="{{ $lugar->id_lugar }}">{{ $lugar->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        <div class="mb-1">
+                            <label for="foto_usuario" class="form-label">Foto de perfil</label>
+                            <input type="file" id="foto_usuario" name="foto_usuario" class="form-control" accept="image/png, image/jpeg" aria-describedby="fotoHelp">
+                            <div class="form-text" id="fotoHelp">Opcional. Si no eliges una imagen se usa la foto por defecto.</div>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Crear cuenta</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+@endpush
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => document.getElementById('transitionCircle').style.display = 'none', 1500);
         });
 
-        // Función para cerrar burbujas de error
+        // Cerrar mensajes de error
         function closeBubble(button) {
             const bubble = button.parentElement;
             bubble.classList.remove('show');
             bubble.classList.add('hidden');
-            // También remover la clase is-invalid del input asociado si existe
-            const inputContainer = bubble.previousElementSibling;
-            if (inputContainer && inputContainer.classList.contains('input-container')) {
-                const input = inputContainer.querySelector('.input-field');
-                if (input) {
-                    input.classList.remove('is-invalid');
-                }
-            }
+            bubble.style.display = 'none';
+            const field = bubble.parentElement.querySelector('.input-field, .form-control');
+            if (field) field.classList.remove('is-invalid');
         }
 
-        // Función para mostrar/ocultar contraseña
+        // Mostrar/ocultar contraseña
         function togglePassword(inputId, button) {
             const input = document.getElementById(inputId);
             const icon = button.querySelector('i');
-            
+
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.className = 'bi bi-eye-slash';
+                button.setAttribute('aria-label', 'Ocultar contraseña');
             } else {
                 input.type = 'password';
                 icon.className = 'bi bi-eye';
+                button.setAttribute('aria-label', 'Mostrar contraseña');
             }
         }
 
@@ -677,18 +247,16 @@
             }
         }
 
-        // Función para mostrar indicador de tipo de usuario
+        // Indicador de tipo de usuario
         function showUserTypeIndicator(email) {
             const indicator = document.getElementById('userTypeIndicator');
             if (!indicator) return;
-            
+
             if (isValidEmail(email)) {
-                // Simular verificación de tipo de usuario basado en el email
-                // En una implementación real, esto vendría del backend
-                const isAdmin = email.toLowerCase().includes('admin') || 
-                               email.toLowerCase().includes('supervisor') ||
-                               email.toLowerCase().includes('gerente');
-                
+                const isAdmin = email.toLowerCase().includes('admin') ||
+                    email.toLowerCase().includes('supervisor') ||
+                    email.toLowerCase().includes('gerente');
+
                 if (isAdmin) {
                     indicator.textContent = 'ADMIN';
                     indicator.className = 'user-type-indicator admin show';
@@ -696,7 +264,7 @@
                     indicator.textContent = '';
                     indicator.className = 'user-type-indicator user show';
                 }
-                
+
                 setTimeout(() => {
                     indicator.classList.remove('show');
                 }, 3000);
@@ -706,7 +274,7 @@
         }
 
         // Validación de login
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
             const email = document.getElementById('logemail').value;
             const password = document.getElementById('logpass').value;
             let hasErrors = false;
@@ -733,11 +301,16 @@
                     document.getElementById('logpass').classList.remove('is-invalid');
                 }
             }
+
+            if (!hasErrors) {
+                const btn = this.querySelector('button[type="submit"]');
+                btn.classList.add('loading');
+            }
             return !hasErrors;
         });
 
         // Validación en tiempo real
-        document.getElementById('logemail').addEventListener('input', function() {
+        document.getElementById('logemail').addEventListener('input', function () {
             const email = this.value;
             if (email && !isValidEmail(email)) {
                 showError('emailError');
@@ -751,7 +324,7 @@
             }
         });
 
-        document.getElementById('logpass').addEventListener('input', function() {
+        document.getElementById('logpass').addEventListener('input', function () {
             if (this.value) {
                 const validation = validatePassword(this.value);
                 if (!validation.isValid) {
@@ -764,8 +337,8 @@
             }
         });
 
-        // Modal validations
-        $('#correoRegistro').on('input', function() {
+        // Validaciones del registro
+        $('#correoRegistro').on('input', function () {
             const email = $(this).val();
             if (email && !isValidEmail(email)) {
                 $(this).addClass('is-invalid');
@@ -776,7 +349,7 @@
             }
         });
 
-        $('#passwordRegistro').on('input', function() {
+        $('#passwordRegistro').on('input', function () {
             const password = $(this).val();
             const validation = validatePassword(password);
             $('#req-uppercase').toggleClass('valid', validation.hasUppercase);
@@ -792,35 +365,38 @@
             const passwordRegistro = $('#passwordRegistro').val();
 
             if (!isValidEmail(correoRegistro)) {
-                alert('El correo debe ser del dominio @bonafont.com o @danone.com');
+                FT.notice('El correo debe ser del dominio @bonafont.com o @danone.com', 'warning');
                 return false;
             }
 
             const passwordValidation = validatePassword(passwordRegistro);
             if (!passwordValidation.isValid) {
-                alert('La contraseña debe cumplir con todos los requisitos mostrados');
+                FT.notice('La contraseña debe cumplir con todos los requisitos mostrados', 'warning');
                 return false;
             }
-            
+
             const id = $('#usuarioId').val();
             const url = id ? `/modal/update_user/${id}` : `/modal/register_user`;
             const method = id ? 'PUT' : 'POST';
             const data = new FormData(this);
-            
+
             if (!$('#foto_usuario')[0].files.length) {
                 data.append('foto_default', 'Sin_Foto.png');
             }
+
+            const submitBtn = $(this).find('button[type="submit"]').addClass('loading').prop('disabled', true);
 
             $.ajax({
                 url, method, data,
                 processData: false,
                 contentType: false,
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                success(res) { alert(res.message); location.reload(); },
+                success(res) { FT.notice(res.message).then(() => location.reload()); },
                 error(err) {
                     const msgs = err.responseJSON?.errors || {};
-                    alert(Object.values(msgs).flat().join('\n'));
-                }
+                    FT.notice(Object.values(msgs).flat().join('\n') || 'No se pudo crear la cuenta', 'error');
+                },
+                complete() { submitBtn.removeClass('loading').prop('disabled', false); }
             });
         });
 
@@ -829,17 +405,18 @@
             $('#usuarioId').val('');
             $('#tipo_usuario').val('2');
             $('.requirement').removeClass('valid');
-            $('.form-control').removeClass('is-invalid');
-            $('.error-bubble').removeClass('show').hide();
+            $('#formRegistro .form-control').removeClass('is-invalid');
+            $('#emailModalError').removeClass('show').hide();
         });
 
-        // WhatsApp functionality
+        // Recuperar contraseña por WhatsApp
         document.getElementById('btnWhatsApp').addEventListener('click', function (e) {
             const emailInput = document.getElementById('logemail');
             const correo = emailInput.value.trim();
             if (!correo) {
                 e.preventDefault();
-                alert('Por favor ingresa tu correo antes de solicitar ayuda por WhatsApp.');
+                FT.notice('Escribe tu correo antes de solicitar ayuda por WhatsApp.', 'info');
+                emailInput.focus();
                 return;
             }
             const mensaje = encodeURIComponent(`Hola, olvidé mi contraseña. Mi correo es ${correo}`);
@@ -848,5 +425,4 @@
             this.setAttribute('href', url);
         });
     </script>
-</body>
-</html>
+@endpush
