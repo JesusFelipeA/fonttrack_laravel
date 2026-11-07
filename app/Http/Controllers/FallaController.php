@@ -27,6 +27,14 @@ class FallaController extends Controller
             $query->where('id_lugar', $request->id_lugar);
         }
 
+        // Un usuario con lugar asignado solo ve los reportes de su lugar; un
+        // administrador sin lugar ve todos. (Antes se filtraba en la vista y un
+        // administrador sin lugar no veía ninguno.)
+        $usuario = $request->user();
+        if ($usuario && $usuario->id_lugar) {
+            $query->where('id_lugar', $usuario->id_lugar);
+        }
+
         // Cargar TODOS los registros sin paginar
         $fallas = $query->with(['lugar'])->orderBy('created_at', 'desc')->get();
 

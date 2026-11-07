@@ -1,0 +1,447 @@
+// =====================================================================
+// Componentes del sistema de diseño
+// =====================================================================
+
+// --- Encabezado de página ------------------------------------------------
+.ft-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+
+    &__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: .375rem;
+        margin-bottom: .375rem;
+        font-size: .75rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        color: var(--ft-brand);
+    }
+    &__title {
+        margin: 0;
+        font-size: clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
+        font-weight: 700;
+        letter-spacing: -.022em;
+    }
+    &__description {
+        margin: .375rem 0 0;
+        max-width: 48rem;
+        color: var(--ft-muted);
+    }
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .5rem;
+    }
+}
+
+// --- Paneles -------------------------------------------------------------
+.ft-panel {
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-lg);
+    box-shadow: $box-shadow-sm;
+
+    &__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--ft-border-soft);
+    }
+    &__title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 650;
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        .bi { color: var(--ft-muted); }
+    }
+    &__body { padding: 1.25rem; }
+    &__footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        padding: .75rem 1.25rem;
+        border-top: 1px solid var(--ft-border-soft);
+        background: var(--ft-surface-2);
+        border-radius: 0 0 var(--ft-radius-lg) var(--ft-radius-lg);
+        &:empty { display: none; }
+    }
+}
+
+// --- Barra de herramientas (búsqueda, filtros, acciones) ----------------
+.ft-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .625rem;
+    padding: .875rem 1.25rem;
+    border-bottom: 1px solid var(--ft-border-soft);
+
+    &__grow { flex: 1 1 16rem; min-width: 0; }
+    &__end { margin-left: auto; display: flex; flex-wrap: wrap; gap: .5rem; }
+}
+
+.ft-search {
+    position: relative;
+    > .bi {
+        position: absolute;
+        left: .75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--ft-muted);
+        pointer-events: none;
+    }
+    > .form-control { padding-left: 2.25rem; }
+}
+
+// --- Tablas --------------------------------------------------------------
+.ft-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table {
+    margin-bottom: 0;
+    vertical-align: middle;
+
+    > thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--ft-surface-2);
+        color: var(--ft-muted);
+        font-size: .75rem;
+        font-weight: 650;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        border-bottom: 1px solid var(--ft-border);
+    }
+    > tbody > tr:last-child > * { border-bottom-width: 0; }
+    > tbody > tr { transition: background-color .12s var(--ft-ease); }
+}
+
+.ft-table-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: .25rem;
+    justify-content: flex-end;
+}
+.table th.ft-col-actions, .table td.ft-col-actions { text-align: right; width: 1%; white-space: nowrap; }
+
+.ft-cell-title { font-weight: 600; color: var(--ft-ink); }
+.ft-cell-sub { display: block; font-size: $font-size-sm; color: var(--ft-muted); }
+
+.ft-avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--ft-surface-2);
+    box-shadow: 0 0 0 1px var(--ft-border);
+    flex: none;
+}
+
+// Tablas → tarjetas en pantallas pequeñas. Cada <td> lleva data-label.
+@include media-breakpoint-down(md) {
+    .ft-table-stack {
+        thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+        tbody, tr, td { display: block; width: 100%; }
+        tbody > tr {
+            padding: .75rem 1rem;
+            border-bottom: 1px solid var(--ft-border-soft);
+        }
+        tbody > tr > td {
+            display: flex;
+            max-width: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: .3125rem 0;
+            border: 0;
+            text-align: right;
+            &::before {
+                content: attr(data-label);
+                flex: none;
+                font-size: .75rem;
+                font-weight: 600;
+                letter-spacing: .03em;
+                text-transform: uppercase;
+                color: var(--ft-muted);
+                text-align: left;
+            }
+            &:not([data-label])::before { content: none; }
+            &[colspan] { display: block; text-align: center; }
+        }
+        td.ft-col-actions { width: 100%; justify-content: flex-end; padding-top: .625rem; }
+    }
+}
+
+// --- Insignias de estado -------------------------------------------------
+.ft-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    padding: .1875rem .5625rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    background: var(--ft-surface-2);
+    color: var(--ft-ink-2);
+    border: 1px solid transparent;
+
+    &::before {
+        content: "";
+        width: .4375rem;
+        height: .4375rem;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: .9;
+    }
+    &--plain::before { content: none; }
+    &--success { background: var(--ft-success-bg); color: var(--ft-success); }
+    &--warning { background: var(--ft-warning-bg); color: var(--ft-warning); }
+    &--danger  { background: var(--ft-danger-bg);  color: var(--ft-danger); }
+    &--info    { background: var(--ft-info-bg);    color: var(--ft-info); }
+    &--brand   { background: var(--ft-brand-soft); color: var(--ft-brand-strong); }
+    &--neutral { background: var(--ft-surface-2);  color: var(--ft-ink-2); border-color: var(--ft-border); }
+}
+
+// --- Estado vacío ----------------------------------------------------------
+.ft-empty {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--ft-muted);
+
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.5rem;
+        height: 3.5rem;
+        margin-bottom: 1rem;
+        border-radius: 50%;
+        background: var(--ft-surface-2);
+        color: var(--ft-muted);
+        font-size: 1.5rem;
+    }
+    &__title { margin: 0 0 .25rem; font-size: 1rem; font-weight: 650; color: var(--ft-ink); }
+    &__text { margin: 0 auto; max-width: 28rem; font-size: $font-size-sm; }
+}
+
+// --- Indicadores (dashboard) -----------------------------------------------
+.ft-stat {
+    position: relative;
+    height: 100%;
+    padding: 1.125rem 1.25rem;
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-lg);
+    box-shadow: $box-shadow-sm;
+
+    &__label {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin-bottom: .625rem;
+        font-size: $font-size-sm;
+        font-weight: 550;
+        color: var(--ft-muted);
+    }
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.875rem;
+        height: 1.875rem;
+        border-radius: var(--ft-radius);
+        background: var(--ft-brand-soft);
+        color: var(--ft-brand);
+    }
+    &__value {
+        font-size: clamp(1.25rem, 1rem + 1.6vw, 1.75rem);
+        overflow-wrap: anywhere;
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -.025em;
+        font-variant-numeric: tabular-nums;
+        color: var(--ft-ink);
+    }
+    &__meta { margin-top: .375rem; font-size: $font-size-sm; color: var(--ft-muted); }
+
+    a.stretched-link:focus-visible::after { outline: 3px solid rgba($ft-orange-600, .55); border-radius: var(--ft-radius-lg); }
+    &:has(.stretched-link):hover { border-color: var(--ft-border-strong); }
+}
+
+// Barra de distribución (p. ej. vehículos por estatus)
+.ft-meter {
+    display: flex;
+    height: .5rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--ft-surface-2);
+    > span { display: block; height: 100%; }
+    > span + span { box-shadow: -2px 0 0 var(--ft-surface); }
+}
+
+// Lista de definición para detalles en modales
+.ft-detail-list {
+    display: grid;
+    grid-template-columns: minmax(8rem, 38%) 1fr;
+    margin: 0;
+    > dt, > dd {
+        margin: 0;
+        padding: .5rem 0;
+        border-bottom: 1px solid var(--ft-border-soft);
+    }
+    > dt { font-size: $font-size-sm; font-weight: 550; color: var(--ft-muted); }
+    > dd { color: var(--ft-ink); word-break: break-word; }
+    > dt:last-of-type, > dd:last-of-type { border-bottom: 0; }
+}
+
+// --- Retoques sobre componentes de Bootstrap -------------------------------
+.btn { letter-spacing: -.005em; }
+
+.btn-outline-secondary {
+    --bs-btn-color: var(--ft-ink-2);
+    --bs-btn-border-color: var(--ft-border-strong);
+    --bs-btn-bg: var(--ft-surface);
+    --bs-btn-hover-color: var(--ft-ink);
+    --bs-btn-hover-bg: var(--ft-surface-2);
+    --bs-btn-hover-border-color: var(--ft-border-strong);
+    --bs-btn-active-color: var(--ft-ink);
+    --bs-btn-active-bg: #{$ft-sand-200};
+    --bs-btn-active-border-color: var(--ft-border-strong);
+}
+
+// Botones fantasma para acciones de fila
+.btn-ghost {
+    --bs-btn-color: var(--ft-muted);
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-color: var(--ft-ink);
+    --bs-btn-hover-bg: var(--ft-surface-2);
+    --bs-btn-hover-border-color: var(--ft-border);
+    --bs-btn-active-color: var(--ft-ink);
+    --bs-btn-active-bg: #{$ft-sand-200};
+    --bs-btn-active-border-color: var(--ft-border);
+    &.text-danger:hover { background: var(--ft-danger-bg); color: var(--ft-danger) !important; border-color: transparent; }
+}
+
+.modal-header {
+    padding: 1rem 1.25rem;
+    .modal-title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        font-size: 1.0625rem;
+        font-weight: 650;
+        .bi { color: var(--ft-brand); }
+    }
+}
+.modal-body { padding: 1.25rem; }
+.modal-footer { padding: .75rem 1.25rem; background: var(--ft-surface-2); border-radius: 0 0 var(--ft-radius-lg) var(--ft-radius-lg); }
+.modal-content { box-shadow: var(--ft-shadow-lg); }
+
+@include media-breakpoint-down(sm) {
+    .modal-dialog:not(.modal-sm) {
+        margin: 0;
+        max-width: none;
+        min-height: 100%;
+        .modal-content { min-height: 100dvh; border: 0; border-radius: 0; }
+        .modal-footer { border-radius: 0; position: sticky; bottom: 0; }
+    }
+}
+
+.form-label { color: var(--ft-ink); }
+.form-control[readonly] { background-color: var(--ft-surface-2); }
+.form-section-title {
+    margin: 1.5rem 0 .875rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--ft-border-soft);
+    font-size: .8125rem;
+    font-weight: 650;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--ft-muted);
+    &:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+}
+.required::after { content: " *"; color: var(--ft-danger); }
+
+.alert { display: flex; align-items: flex-start; gap: .625rem; }
+.alert > .bi { flex: none; margin-top: .125rem; }
+.alert-info    { --bs-alert-bg: var(--ft-info-bg);    --bs-alert-border-color: #{rgba($ft-info, .2)};    --bs-alert-color: var(--ft-info); }
+.alert-success { --bs-alert-bg: var(--ft-success-bg); --bs-alert-border-color: #{rgba($ft-success, .2)}; --bs-alert-color: var(--ft-success); }
+.alert-warning { --bs-alert-bg: var(--ft-warning-bg); --bs-alert-border-color: #{rgba($ft-warning, .25)}; --bs-alert-color: #7A4605; }
+.alert-danger  { --bs-alert-bg: var(--ft-danger-bg);  --bs-alert-border-color: #{rgba($ft-danger, .2)};  --bs-alert-color: var(--ft-danger); }
+
+.pagination { flex-wrap: wrap; gap: .25rem; margin: 0; }
+.page-link { border-radius: var(--ft-radius) !important; cursor: pointer; }
+nav[aria-label] > .pagination, .ft-pagination .pagination { justify-content: center; }
+.ft-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    // Paginador de Laravel (bootstrap-5): el texto resumen y la navegación.
+    nav { width: 100%; }
+    nav > .d-sm-flex { gap: .75rem; }
+    p.small { margin: 0; color: var(--ft-muted); }
+}
+
+// --- Notificaciones tipo toast -------------------------------------------
+.ft-toast-region {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: $zindex-toast;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    width: min(24rem, calc(100vw - 2rem));
+    pointer-events: none;
+}
+.ft-toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: .625rem;
+    padding: .75rem .875rem;
+    border-radius: var(--ft-radius-lg);
+    border: 1px solid var(--ft-border);
+    background: var(--ft-surface);
+    box-shadow: var(--ft-shadow-lg);
+    font-size: .875rem;
+    animation: ft-toast-in .2s var(--ft-ease);
+    > .bi { font-size: 1.125rem; margin-top: .0625rem; }
+    &--success > .bi { color: var(--ft-success); }
+    &--error > .bi { color: var(--ft-danger); }
+    &--info > .bi { color: var(--ft-info); }
+    &__close { margin-left: auto; }
+}
+@keyframes ft-toast-in { from { opacity: 0; transform: translateY(.5rem); } to { opacity: 1; transform: none; } }
+
+// SweetAlert2 con la identidad de FontTrack
+.swal2-popup { font-family: $font-family-sans-serif; border-radius: var(--ft-radius-lg); color: var(--ft-ink); }
+.swal2-title { font-size: 1.25rem; font-weight: 650; color: var(--ft-ink); }
+.swal2-html-container { color: var(--ft-muted); font-size: .9375rem; }
+.swal2-actions .btn { min-width: 7rem; }

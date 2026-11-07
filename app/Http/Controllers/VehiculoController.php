@@ -98,6 +98,9 @@ class VehiculoController extends Controller
                 return redirect()->back()->withInput()->with('error', 'No tienes permisos para crear vehículos en este lugar');
             }
 
+            // La columna kilometraje no admite NULL (default 0): un campo vacío se guarda como 0.
+            $validated['kilometraje'] = $validated['kilometraje'] ?? 0;
+
             $vehiculo = Vehiculo::create($validated);
 
             if ($request->expectsJson()) {
@@ -110,6 +113,9 @@ class VehiculoController extends Controller
 
             return redirect()->route('vehiculos.index')->with('success', 'Vehículo registrado correctamente');
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Errores de validación: Laravel responde 422 (JSON) o regresa al formulario con $errors.
+            throw $e;
         } catch (\Exception $e) {
             Log::error('Error al crear vehículo: ' . $e->getMessage());
             
@@ -234,6 +240,8 @@ class VehiculoController extends Controller
                 return redirect()->back()->withInput()->with('error', 'No puedes mover vehículos a otros lugares');
             }
 
+            $validated['kilometraje'] = $validated['kilometraje'] ?? 0;
+
             $vehiculo->update($validated);
 
             if ($request->expectsJson()) {
@@ -246,6 +254,9 @@ class VehiculoController extends Controller
 
             return redirect()->route('vehiculos.index')->with('success', 'Vehículo actualizado correctamente');
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Errores de validación: Laravel responde 422 (JSON) o regresa al formulario con $errors.
+            throw $e;
         } catch (\Exception $e) {
             Log::error('Error al actualizar vehículo: ' . $e->getMessage());
             

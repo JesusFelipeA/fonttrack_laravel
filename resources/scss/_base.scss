@@ -1,0 +1,110 @@
+// =====================================================================
+// Base: variables CSS expuestas, tipografía y accesibilidad global
+// =====================================================================
+
+:root {
+    --ft-brand: #{$ft-orange-600};
+    --ft-brand-strong: #{$ft-orange-700};
+    --ft-brand-soft: #{$ft-orange-50};
+    --ft-brand-accent: #{$ft-orange-400};
+    --ft-ink: #{$ft-cafe-900};
+    --ft-ink-2: #{$ft-cafe-700};
+    --ft-muted: #{$ft-cafe-500};
+    --ft-bg: #{$ft-sand-50};
+    --ft-surface: #fff;
+    --ft-surface-2: #{$ft-sand-100};
+    --ft-border: #{$ft-sand-300};
+    --ft-border-soft: #{$ft-sand-200};
+    --ft-border-strong: #{$ft-sand-400};
+    --ft-success: #{$ft-success};   --ft-success-bg: #{$ft-success-bg};
+    --ft-warning: #{$ft-warning};   --ft-warning-bg: #{$ft-warning-bg};
+    --ft-danger: #{$ft-danger};     --ft-danger-bg: #{$ft-danger-bg};
+    --ft-info: #{$ft-info};         --ft-info-bg: #{$ft-info-bg};
+    --ft-radius: #{$border-radius};
+    --ft-radius-lg: #{$border-radius-lg};
+    --ft-shadow: #{$box-shadow};
+    --ft-shadow-lg: #{$box-shadow-lg};
+    --ft-sidebar-w: 16.5rem;
+    --ft-topbar-h: 3.75rem;
+    --ft-ease: cubic-bezier(.2, .7, .3, 1);
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 { letter-spacing: -.011em; }
+
+// Números alineados para existencias, costos, kilometraje y fechas.
+.ft-num,
+.table td,
+.table th,
+.badge { font-variant-numeric: tabular-nums; }
+
+// Claves, ECO, placas: monoespaciado para lectura carácter por carácter.
+.ft-code {
+    font-family: $font-family-monospace;
+    font-size: .875em;
+    font-weight: 500;
+    letter-spacing: -.01em;
+}
+
+// Saltar al contenido (visible solo con teclado).
+.ft-skip-link {
+    position: absolute;
+    top: .5rem;
+    left: .5rem;
+    z-index: 2000;
+    padding: .5rem .875rem;
+    border-radius: var(--ft-radius);
+    background: var(--ft-ink);
+    color: #fff;
+    font-weight: 600;
+    transform: translateY(-200%);
+    transition: transform .15s var(--ft-ease);
+    &:focus { transform: none; color: #fff; }
+}
+
+// Foco visible siempre que se navega con teclado.
+:focus-visible {
+    outline: 3px solid rgba($ft-orange-600, .55);
+    outline-offset: 2px;
+}
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible { outline: none; }
+
+// Botones de solo ícono: área táctil mínima.
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0;
+    &.btn-sm { min-width: 2rem; min-height: 2rem; }
+}
+
+@media (pointer: coarse) {
+    .btn, .form-control, .form-select { min-height: 2.75rem; }
+    .btn-icon, .btn-icon.btn-sm { min-width: 2.75rem; min-height: 2.75rem; }
+    .page-link { min-width: 2.75rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; }
+}
+
+// Respeta la preferencia de movimiento reducido.
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+::selection { background: rgba($ft-orange-400, .35); }
+
+.min-w-0 { min-width: 0; }

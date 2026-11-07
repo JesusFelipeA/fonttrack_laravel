@@ -14,7 +14,7 @@
         body {
             font-family: 'Arial', sans-serif;
             background-color: #fafafa;
-            color: #333;
+            color: #2B2119;
             padding: 20px;
         }
 
@@ -56,40 +56,40 @@
 
         /* Tabla de datos generales */
         .data-table th {
-            background: #eaeaea;
+            background: #F5EFE9;
             padding: 6px 8px;
             width: 35%;
-            border: 1px solid #ddd;
+            border: 1px solid #E2D6CA;
         }
 
         .data-table td {
             padding: 6px 8px;
             background: #fff;
-            border: 1px solid #ddd;
+            border: 1px solid #E2D6CA;
         }
 
         /* Tabla para Materiales Utilizados */
         table thead {
-            background: #007ACC;
+            background: #B4521C;
             color: #fff;
         }
 
         table thead th {
             padding: 6px 8px;
-            border: 1px solid #ddd;
+            border: 1px solid #E2D6CA;
         }
 
         table tbody tr {
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #E2D6CA;
         }
 
         table tbody tr:nth-child(even) {
-            background: #f9f9f9;
+            background: #FBF8F5;
         }
 
         table tbody td {
             padding: 6px 8px;
-            border: 1px solid #ddd;
+            border: 1px solid #E2D6CA;
         }
 
         table th,
@@ -101,7 +101,7 @@
         .firma {
             margin-top: 30px;
             padding: 10px 20px;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #E2D6CA;
             font-size: 10px;
         }
 
@@ -136,8 +136,8 @@
 
         /* ✅ NUEVOS ESTILOS para materiales */
         .material-summary {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
+            background: #FBF8F5;
+            border: 1px solid #E2D6CA;
             border-radius: 4px;
             padding: 8px;
             margin-bottom: 10px;
@@ -145,11 +145,11 @@
         }
 
         .material-summary strong {
-            color: #007ACC;
+            color: #B4521C;
         }
 
         .material-row {
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #E2D6CA;
         }
 
         .material-row:last-child {
@@ -158,10 +158,10 @@
 
         .no-materials {
             text-align: center;
-            color: #666;
+            color: #6B5A4C;
             font-style: italic;
             padding: 15px;
-            background: #f8f9fa;
+            background: #FBF8F5;
             border-radius: 8px;
         }
 
@@ -183,7 +183,7 @@
             @if(file_exists(public_path('img/completa.png')))
                 <img src="{{ public_path('img/completa.png') }}" alt="Banner">
             @else
-                <div style="height: 100px; background: #007ACC; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">
+                <div style="height: 100px; background: #B4521C; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">
                     FONTTRACK - SISTEMA DE REPORTES
                 </div>
             @endif
@@ -368,7 +368,7 @@
                     @endforeach
                     
                     @if(collect($materialesFormateados)->where('costo_unitario', '>', 0)->count() > 0)
-                        <tr style="background: #f8f9fa; font-weight: bold;">
+                        <tr style="background: #FBF8F5; font-weight: bold;">
                             <td colspan="{{ collect($materialesFormateados)->where('costo_unitario', '>', 0)->count() > 0 ? '3' : '2' }}">TOTAL</td>
                             <td>{{ collect($materialesFormateados)->sum('cantidad') }}</td>
                             @if(collect($materialesFormateados)->where('costo_unitario', '>', 0)->count() > 0)

@@ -1,0 +1,140 @@
+// =====================================================================
+// FontTrack — Tokens de diseño
+// Dirección: "operación industrial cálida". El naranja y el café de la
+// identidad original se conservan, pero el naranja pasa de fondo a acento
+// y todos los pares texto/fondo cumplen WCAG 2.2 AA (≥ 4.5:1).
+// =====================================================================
+
+// --- Paleta base -------------------------------------------------------
+$ft-orange-700: #9A4416;   // hover / activo             (blanco: 6.5:1)
+$ft-orange-600: #B4521C;   // color de marca accionable  (blanco: 5.0:1)
+$ft-orange-400: #E38B5B;   // naranja histórico: solo decorativo
+$ft-orange-200: #F6B88F;   // durazno histórico: solo decorativo
+$ft-orange-50:  #FFF1E6;   // fondo sutil de marca       (texto 600: 5.1:1)
+
+$ft-cafe-900: #2B2119;     // texto principal            (sobre fondo: 14.9:1)
+$ft-cafe-700: #4A3A2D;
+$ft-cafe-500: #6B5A4C;     // texto secundario           (sobre blanco: 6.6:1)
+$ft-cafe-300: #B8A797;
+
+$ft-sand-50:  #FBF8F5;     // fondo de la aplicación
+$ft-sand-100: #F5EFE9;     // superficie hundida
+$ft-sand-200: #EDE4DB;
+$ft-sand-300: #E2D6CA;     // bordes
+$ft-sand-400: #CDBCAC;     // bordes fuertes / controles
+
+$ft-success: #1F7A4D;  $ft-success-bg: #E7F4EC;
+$ft-warning: #A15C07;  $ft-warning-bg: #FDF3E1;
+$ft-danger:  #B42318;  $ft-danger-bg:  #FDECEA;
+$ft-info:    #1E5A85;  $ft-info-bg:    #E6F0F8;
+
+// --- Variables de Bootstrap --------------------------------------------
+$primary:   $ft-orange-600;
+$secondary: $ft-cafe-500;
+$success:   $ft-success;
+$info:      $ft-info;
+$warning:   $ft-warning;
+$danger:    $ft-danger;
+$light:     $ft-sand-100;
+$dark:      $ft-cafe-900;
+
+$body-bg: $ft-sand-50;
+$body-color: $ft-cafe-900;
+$body-secondary-color: $ft-cafe-500;
+$border-color: $ft-sand-300;
+$link-color: $ft-orange-600;
+$link-hover-color: $ft-orange-700;
+$headings-color: $ft-cafe-900;
+
+$font-family-sans-serif: "Inter Variable", Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+$font-size-base: .9375rem;   // 15 px: densidad cómoda para tablas operativas
+$font-size-sm: .8125rem;
+$font-size-lg: 1.0625rem;
+$line-height-base: 1.55;
+$headings-font-weight: 650;
+$headings-line-height: 1.25;
+$h1-font-size: 1.75rem;
+$h2-font-size: 1.5rem;
+$h3-font-size: 1.25rem;
+$h4-font-size: 1.125rem;
+$h5-font-size: 1rem;
+$h6-font-size: .875rem;
+
+$border-radius:    .5rem;
+$border-radius-sm: .375rem;
+$border-radius-lg: .75rem;
+$border-radius-xl: 1rem;
+
+$box-shadow-sm: 0 1px 2px rgba(43, 33, 25, .06);
+$box-shadow:    0 1px 2px rgba(43, 33, 25, .06), 0 4px 12px rgba(43, 33, 25, .06);
+$box-shadow-lg: 0 12px 32px rgba(43, 33, 25, .14);
+
+$enable-shadows: false;
+$enable-gradients: false;
+$enable-negative-margins: true;
+
+// Foco visible y consistente en todos los controles.
+$focus-ring-width: .1875rem;
+$focus-ring-opacity: .35;
+$focus-ring-color: rgba($ft-orange-600, .35);
+$input-focus-border-color: $ft-orange-600;
+$input-border-color: $ft-sand-400;
+$input-placeholder-color: #8A796B;
+$input-padding-y: .5rem;
+$input-padding-x: .75rem;
+$form-label-font-weight: 550;
+$form-label-margin-bottom: .375rem;
+$form-text-color: $ft-cafe-500;
+
+$btn-padding-y: .5rem;
+$btn-padding-x: .875rem;
+$btn-font-weight: 550;
+$btn-padding-y-sm: .3125rem;
+$btn-padding-x-sm: .625rem;
+
+$table-cell-padding-y: .75rem;
+$table-cell-padding-x: .875rem;
+$table-cell-padding-y-sm: .5rem;
+$table-color: $ft-cafe-900;
+$table-border-color: $ft-sand-200;
+$table-hover-bg: $ft-orange-50;
+$table-striped-bg: $ft-sand-100;
+$table-th-font-weight: 600;
+
+$card-border-color: $ft-sand-300;
+$card-cap-bg: transparent;
+$card-spacer-y: 1.25rem;
+$card-spacer-x: 1.25rem;
+
+$modal-content-border-color: $ft-sand-300;
+$modal-header-border-color: $ft-sand-200;
+$modal-footer-border-color: $ft-sand-200;
+$modal-backdrop-opacity: .45;
+$modal-content-border-radius: $border-radius-lg;
+
+$dropdown-border-color: $ft-sand-300;
+$dropdown-link-hover-bg: $ft-sand-100;
+$dropdown-link-active-bg: $ft-orange-50;
+$dropdown-link-active-color: $ft-orange-700;
+$dropdown-box-shadow: $box-shadow-lg;
+
+$pagination-color: $ft-cafe-700;
+$pagination-border-color: $ft-sand-300;
+$pagination-hover-bg: $ft-sand-100;
+$pagination-hover-color: $ft-cafe-900;
+$pagination-active-bg: $ft-orange-600;
+$pagination-active-border-color: $ft-orange-600;
+$pagination-disabled-color: #8A796B;
+$pagination-disabled-bg: $ft-sand-100;
+$pagination-disabled-border-color: $ft-sand-300;
+
+$badge-font-weight: 600;
+$badge-padding-y: .3em;
+$badge-padding-x: .6em;
+
+$alert-border-width: 1px;
+$progress-bg: $ft-sand-200;
+$progress-bar-bg: $ft-orange-600;
+$offcanvas-horizontal-width: 17rem;
+$zindex-toast: 1090;

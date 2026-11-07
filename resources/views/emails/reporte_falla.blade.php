@@ -38,7 +38,7 @@
         }
 
         header h1 {
-            color: #E38B5B;
+            color: #B4521C;
             font-size: 24px;
             margin-bottom: 10px;
         }
@@ -52,7 +52,7 @@
         h1, h3 {
             text-align: center;
             margin-bottom: 15px;
-            color: #E38B5B;
+            color: #B4521C;
         }
 
         h3 {
@@ -73,7 +73,7 @@
         }
 
         .data-table th {
-            background: #eaeaea;
+            background: #F5EFE9;
             padding: 8px 10px;
             width: 35%;
             border: 1px solid #ddd;
@@ -118,7 +118,7 @@
         }
 
         .materials-table tbody tr:last-child {
-            background: #f0f8ff;
+            background: #FFF1E6;
             font-weight: bold;
         }
 
@@ -144,8 +144,8 @@
 
         /* ✅ NUEVOS ESTILOS para materiales */
         .material-summary {
-            background: #E8F4FD;
-            border: 1px solid #B3D9FF;
+            background: #FFF1E6;
+            border: 1px solid #F6B88F;
             border-radius: 5px;
             padding: 12px;
             margin-bottom: 15px;
@@ -153,7 +153,7 @@
         }
 
         .material-summary strong {
-            color: #007ACC;
+            color: #B4521C;
         }
 
         .no-materials {
@@ -184,16 +184,16 @@
 
         /* Información del adjunto */
         .attachment-info {
-            background-color: #E8F4FD;
+            background-color: #FFF1E6;
             padding: 15px;
             border-radius: 5px;
             margin-top: 20px;
-            border-left: 4px solid #007ACC;
+            border-left: 4px solid #B4521C;
             font-size: 12px;
         }
 
         .attachment-info strong {
-            color: #007ACC;
+            color: #B4521C;
         }
 
         /* Footer */
@@ -414,12 +414,12 @@
                     @endforeach
                     
                     @if(collect($materialesFormateados)->sum('costo_total') > 0)
-                        <tr style="background: #F0F8FF; font-weight: bold; border-top: 2px solid #007ACC;">
+                        <tr style="background: #FFF1E6; font-weight: bold; border-top: 2px solid #B4521C;">
                             <td>🎯 <strong>TOTAL</strong></td>
                             <td style="text-align: center; font-weight: bold;">{{ collect($materialesFormateados)->sum('cantidad') }}</td>
                             @if(collect($materialesFormateados)->where('costo_unitario', '>', 0)->count() > 0)
                                 <td style="text-align: right;">-</td>
-                                <td style="text-align: right; font-weight: bold; color: #007ACC;">${{ number_format(collect($materialesFormateados)->sum('costo_total'), 2) }}</td>
+                                <td style="text-align: right; font-weight: bold; color: #B4521C;">${{ number_format(collect($materialesFormateados)->sum('costo_total'), 2) }}</td>
                             @endif
                         </tr>
                     @endif

@@ -1,0 +1,340 @@
+// =====================================================================
+// Estilos por módulo. Conserva los nombres de clase que los scripts de
+// las vistas agregan o quitan (show, hidden, active, loading…), para que
+// el comportamiento existente no cambie.
+// =====================================================================
+
+// --- Utilidades compartidas por scripts -------------------------------------
+.btn.loading { position: relative; color: transparent !important; pointer-events: none; }
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: ft-spin .7s linear infinite;
+}
+@keyframes ft-spin { to { transform: rotate(360deg); } }
+
+.loading-spinner {
+    display: inline-block;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 3px solid var(--ft-border);
+    border-top-color: var(--ft-brand);
+    border-radius: 50%;
+    animation: ft-spin .7s linear infinite;
+}
+
+.image-preview {
+    max-width: 9rem;
+    max-height: 9rem;
+    border-radius: var(--ft-radius-lg);
+    object-fit: cover;
+    box-shadow: 0 0 0 1px var(--ft-border);
+}
+
+// Estado vacío heredado (vehículos)
+td.empty-state {
+    padding: 3rem 1rem !important;
+    text-align: center;
+    color: var(--ft-muted);
+    > .bi { display: block; margin-bottom: .75rem; font-size: 2rem; }
+    h4 { font-size: 1rem; font-weight: 650; color: var(--ft-ink); margin-bottom: .25rem; }
+    p { margin: 0; font-size: .875rem; }
+}
+
+// --- Notificaciones pendientes (materiales, administrador) ---------------
+.notification-bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ft-ink-2);
+    font-size: 1.125rem;
+    cursor: pointer;
+    &:hover { background: var(--ft-surface-2); border-color: var(--ft-border); }
+    &.has-notifications { color: var(--ft-brand); }
+}
+.notification-badge {
+    position: absolute;
+    top: .125rem;
+    right: .0625rem;
+    min-width: 1.125rem;
+    height: 1.125rem;
+    padding: 0 .3125rem;
+    border-radius: 999px;
+    background: var(--ft-danger);
+    color: #fff;
+    font-size: .6875rem;
+    font-weight: 700;
+    line-height: 1.125rem;
+    text-align: center;
+    box-shadow: 0 0 0 2px var(--ft-surface);
+    &.hidden { display: none; }
+}
+
+.notification-item {
+    padding: 1rem;
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-lg);
+    background: var(--ft-surface);
+    & + & { margin-top: .75rem; }
+    &:hover { border-color: var(--ft-border-strong); }
+}
+.notification-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; margin-bottom: .5rem; }
+.notification-title { font-weight: 650; color: var(--ft-ink); }
+.notification-time { font-size: .8125rem; color: var(--ft-muted); white-space: nowrap; }
+.notification-details { font-size: .875rem; color: var(--ft-ink-2); line-height: 1.7; }
+.notification-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .875rem; }
+.btn-view    { @include button-variant($white, $ft-sand-400, $ft-cafe-900, $ft-sand-100, $ft-sand-400, $ft-cafe-900); }
+.btn-approve { @include button-variant($ft-success, $ft-success, $white, darken($ft-success, 6%), darken($ft-success, 6%), $white); }
+.btn-reject  { @include button-variant($white, rgba($ft-danger, .4), $ft-danger, $ft-danger-bg, $ft-danger, $ft-danger); }
+.no-notifications {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--ft-muted);
+    > .bi { display: block; margin-bottom: .75rem; font-size: 2rem; }
+    h5 { font-size: 1rem; color: var(--ft-ink); }
+}
+
+// --- Existencias -------------------------------------------------------------
+.ft-stock {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    padding: .125rem;
+    border: 1px solid var(--ft-border);
+    border-radius: 999px;
+    background: var(--ft-surface);
+    .btn { width: 1.75rem; height: 1.75rem; min-height: 0; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+    &__value { min-width: 2.25rem; text-align: center; font-weight: 650; font-variant-numeric: tabular-nums; }
+    &--empty &__value { color: var(--ft-danger); }
+}
+
+// --- Buscadores con lista de resultados (reporte de uso, usuario) ----------
+.material-search-container,
+.vehicle-search-container { position: relative; }
+
+.search-results-dropdown,
+.vehicle-results-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1060;
+    display: none;
+    max-height: 16rem;
+    margin-top: .25rem;
+    overflow-y: auto;
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    border-radius: var(--ft-radius-lg);
+    box-shadow: var(--ft-shadow-lg);
+}
+
+.search-result-item,
+.vehicle-result-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .625rem .875rem;
+    border-bottom: 1px solid var(--ft-border-soft);
+    cursor: pointer;
+    &:last-child { border-bottom: 0; }
+    &:hover { background: var(--ft-brand-soft); }
+}
+.material-code, .vehicle-eco { font-family: $font-family-monospace; font-weight: 600; font-size: .875rem; color: var(--ft-brand-strong); }
+.material-meta, .vehicle-meta { margin-top: .125rem; font-size: .75rem; color: var(--ft-muted); }
+.vehicle-info { display: flex; flex-direction: column; min-width: 0; }
+.material-stock, .vehicle-status {
+    flex: none;
+    padding: .125rem .5rem;
+    border-radius: 999px;
+    background: var(--ft-surface-2);
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--ft-ink-2);
+    text-transform: capitalize;
+}
+.btn-add-material { @include button-variant($ft-success, $ft-success, $white, darken($ft-success, 6%), darken($ft-success, 6%), $white); }
+
+// Aviso central de éxito (vista de usuario)
+.notification-success {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    z-index: 1095;
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    max-width: calc(100vw - 2rem);
+    padding: .875rem 1.125rem;
+    border-radius: var(--ft-radius-lg);
+    background: var(--ft-ink);
+    color: #fff;
+    font-weight: 550;
+    box-shadow: var(--ft-shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 1rem);
+    transition: opacity .2s var(--ft-ease), transform .2s var(--ft-ease), visibility .2s;
+    > .bi { color: #7FD3A8; font-size: 1.25rem; }
+    &.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+}
+
+// Acceso por secuencia de teclado (funcionalidad existente, sin cambios)
+.secret-indicator {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--ft-surface);
+    border: 1px solid var(--ft-border);
+    color: var(--ft-muted);
+    font-size: .875rem;
+    opacity: .7;
+    transition: transform .15s var(--ft-ease), opacity .15s;
+    &.active { opacity: 1; transform: scale(1.12); color: var(--ft-brand); }
+}
+.secret-sequence {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1095;
+    display: none;
+    padding: 1rem 1.5rem;
+    border-radius: var(--ft-radius-lg);
+    background: var(--ft-ink);
+    color: #fff;
+    font-family: $font-family-monospace;
+    font-weight: 600;
+    box-shadow: var(--ft-shadow-lg);
+    transform: translate(-50%, -50%);
+    &.show { display: block; }
+}
+.admin-access-btn {
+    position: fixed;
+    top: calc(var(--ft-topbar-h) + .75rem);
+    right: 1rem;
+    z-index: 1000;
+    @include button-variant($ft-orange-600, $ft-orange-600, $white, $ft-orange-700, $ft-orange-700, $white);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-.5rem);
+    transition: opacity .2s var(--ft-ease), transform .2s var(--ft-ease), visibility .2s;
+    &.show { opacity: 1; visibility: visible; transform: none; }
+}
+
+// --- Vehículos -----------------------------------------------------------
+.badge-activo        { background: var(--ft-success-bg) !important; color: var(--ft-success) !important; }
+.badge-inactivo      { background: var(--ft-surface-2) !important;  color: var(--ft-ink-2) !important; box-shadow: inset 0 0 0 1px var(--ft-border); }
+.badge-mantenimiento { background: var(--ft-warning-bg) !important; color: var(--ft-warning) !important; }
+.badge-activo, .badge-inactivo, .badge-mantenimiento { border-radius: 999px; font-size: .75rem; }
+
+.notification {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1095;
+    max-width: min(24rem, calc(100vw - 2rem));
+    padding: .875rem 1rem;
+    border-radius: var(--ft-radius-lg);
+    border: 1px solid var(--ft-border);
+    border-left-width: 4px;
+    background: var(--ft-surface);
+    color: var(--ft-ink);
+    font-size: .875rem;
+    font-weight: 500;
+    box-shadow: var(--ft-shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(.75rem);
+    transition: opacity .2s var(--ft-ease), transform .2s var(--ft-ease), visibility .2s;
+    &.show { opacity: 1; visibility: visible; transform: none; }
+    &.success { border-left-color: var(--ft-success); }
+    &.error { border-left-color: var(--ft-danger); }
+}
+.table-loading { position: relative; opacity: .6; pointer-events: none; }
+
+// --- Reportes de fallas --------------------------------------------------
+.column-toggle {
+    --bs-btn-padding-y: .25rem;
+    --bs-btn-padding-x: .625rem;
+    --bs-btn-font-size: .8125rem;
+    --bs-btn-color: var(--ft-muted);
+    --bs-btn-bg: var(--ft-surface);
+    --bs-btn-border-color: var(--ft-border);
+    --bs-btn-hover-color: var(--ft-ink);
+    --bs-btn-hover-bg: var(--ft-surface-2);
+    --bs-btn-hover-border-color: var(--ft-border-strong);
+    --bs-btn-active-color: var(--ft-brand-strong);
+    --bs-btn-active-bg: var(--ft-brand-soft);
+    --bs-btn-active-border-color: rgba(180, 82, 28, .35);
+    border-radius: 999px;
+    &.active { color: var(--ft-brand-strong); background: var(--ft-brand-soft); border-color: rgba(180, 82, 28, .35); }
+    &.active::before { content: "\F26E"; font-family: bootstrap-icons; margin-right: .25rem; font-size: .75rem; }
+}
+
+.table-wrapper { overflow-x: auto; max-height: 70vh; -webkit-overflow-scrolling: touch; }
+.table-wrapper .table > thead th { top: 0; }
+.scroll-indicator {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    padding: .5rem 1.25rem;
+    font-size: .8125rem;
+    color: var(--ft-muted);
+    background: var(--ft-surface-2);
+    border-bottom: 1px solid var(--ft-border-soft);
+    &.hidden { display: none; }
+}
+.table th.hidden-col,
+.table td.hidden-col { display: none; }
+
+.expandable-cell { position: relative; cursor: default; }
+.expandable-cell .full-content {
+    position: absolute;
+    left: 0;
+    top: calc(100% + .25rem);
+    z-index: 5;
+    display: none;
+    min-width: 14rem;
+    max-width: 22rem;
+    padding: .625rem .75rem;
+    border-radius: var(--ft-radius);
+    background: var(--ft-ink);
+    color: #fff;
+    font-size: .8125rem;
+    white-space: normal;
+    box-shadow: var(--ft-shadow-lg);
+}
+.expandable-cell:hover .full-content,
+.expandable-cell:focus-within .full-content { display: block; }
+
+.badge-eco, .badge-placas {
+    font-family: $font-family-monospace;
+    font-weight: 600;
+    background: var(--ft-surface-2) !important;
+    color: var(--ft-ink) !important;
+    box-shadow: inset 0 0 0 1px var(--ft-border);
+}
+.badge-cantidad { background: var(--ft-brand-soft) !important; color: var(--ft-brand-strong) !important; }
+
+#bodyFallas.loading { opacity: .5; transition: opacity .15s; }
